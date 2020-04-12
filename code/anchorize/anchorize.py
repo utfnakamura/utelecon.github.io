@@ -2,26 +2,10 @@
 
 import re
 
-def anchorize(s):
-    """
-    文字列 s 中の http://... の部分をアンカー<a href="...">...</a>にする
-    """
-    #url = re.compile("https?://[\w/:%#\$&\?\(\)~\.=\+\-]+")
-    # 日本語はダメバージョン
-    url = re.compile("https?://[0-9A-Za-z/:%#\$&\?\(\)~\.=\+\-@]+")
-    lines = []
-    for line in s.split("\n"):
-        frags = []
-        l = 0
-        for m in url.finditer(line):
-            i,j = m.span() 
-            frags.append(line[l:i])
-            frags.append('<a href="%s" target="_blank">%s</a>'
-                         % (line[i:j], line[i:j]))
-            l = j
-        frags.append(line[l:])
-        lines.append("".join(frags))
-    return "<br />\n".join(lines)
+# Just an one-liner. Reinventing the wheel.
+texturl = re.compile(r"(https?://[0-9A-Za-z/:%#\$&\?\(\)~\.=\+\-@]+)",re.MULTILINE)                                                                             
+def anchorize(s):                                                                                                                                                        
+    return texturl.sub('<a href="\\1" target="_blank rel=noopener">\\1</a>',s).replace("\n","<br />\n") 
 
 def anchorize_file(in_file, out_file):
     rp = open(in_file)
